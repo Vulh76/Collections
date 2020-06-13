@@ -9,21 +9,38 @@ public class Collections {
     public static void main(String[] args) {
         try(FileInputStream inFile = new FileInputStream("input.txt")) {
             BufferedReader buf = new BufferedReader(new InputStreamReader(inFile));
-            TreeMap<String, Integer> words = new TreeMap<>(new stringComparator());
+            TreeSet<Record> records = new TreeSet<>(new recordComparator());
             String str;
             while ((str = buf.readLine()) != null) {
-                Integer cnt = words.put(str, 1);
-                if (cnt != null) {
-                    words.put(str, ++cnt);
+                Record record = new Record(str);
+                SortedSet<Record> rec = records.subSet(record, true, record, true);
+                if (rec.isEmpty()) {
+                    records.add(record);
+                }
+                else {
+                    Record r = rec.first();
+                    r.setCount(r.getCount() + 1);
                 }
             }
 
+            System.out.println("\r\nКоличество различных слов в файле: " + records.size());
+
+            System.out.println("\r\nСписок слов:");
+            for (Record r : records) {
+                System.out.println(r.getWord());
+            }
+
             System.out.println("\r\nСтатистика по словам:");
-            printMap(words);
+            for (Record r : records) {
+                System.out.println(r.getWord() + "   " + r.getCount());
+            }
 
             System.out.println("\r\nСписок слов в обратном порядке:");
-
-
+            Iterator<Record> iter = records.descendingIterator();
+            while (iter.hasNext())
+            {
+                System.out.println(iter.next().getWord());
+            }
 
             Scanner scanner = new Scanner(System.in);
             while (true){
@@ -31,7 +48,7 @@ public class Collections {
                 if (scanner.hasNextInt()) {
                     int num = scanner.nextInt();
                     if(num < 0) break;
-                    printMapRec(words, num);
+                    printRec(records, num);
                 }
                 else {
                     scanner.next();
@@ -46,38 +63,23 @@ public class Collections {
         }
     }
 
-    public static class stringComparator implements Comparator<String> {
+    public static void printRec(Set<Record> set, Integer num) {
+        if (num < 0 || num > set.size() - 1) return;
+
+        Record[] records = new Record[set.size()];
+        set.toArray(records);
+
+        System.out.println(records[num].getWord());
+    }
+
+    public static class recordComparator implements Comparator<Record> {
         private final Collator russianCollator = Collator.getInstance(new Locale("ru", "RU"));
 
         @Override
-        public int compare(String o1, String o2) {
-            if (o1.length() < o2.length()) return -1;
-            else if (o1.length() > o2.length()) return 1;
-            else return russianCollator.compare(o1, o2);
+        public int compare(Record o1, Record o2) {
+            if (o1.getWord().length() < o2.getWord().length()) return -1;
+            else if (o1.getWord().length() > o2.getWord().length()) return 1;
+            else return russianCollator.compare(o1.getWord(), o2.getWord());
         }
-    }
-
-    public static void printMap(Map map) {
-        Set s = map.entrySet();
-        Iterator it = s.iterator();
-
-        while (it.hasNext()) {
-            Map.Entry m = (Map.Entry) it.next();
-            System.out.println(m.getKey() + "   " +  m.getValue());
-        }
-    }
-
-    public static void printMapRec(Map map, Integer num) {
-        if (num < 0 || num > map.size() - 1) return;
-
-        Set s = map.entrySet();
-        Iterator it = s.iterator();
-
-        for (int i = 0; i < num; i++) {
-            it.next();
-        }
-
-        Map.Entry m = (Map.Entry) it.next();
-        System.out.println(m.getKey());
     }
 }
