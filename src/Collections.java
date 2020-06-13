@@ -23,7 +23,7 @@ public class Collections {
                 }
             }
 
-            System.out.println("\r\nКоличество различных слов в файле: " + records.size());
+            System.out.println("\r\nКоличество уникальных слов в файле: " + records.size());
 
             System.out.println("\r\nСписок слов:");
             for (Record r : records) {
@@ -42,28 +42,35 @@ public class Collections {
                 System.out.println(iter.next().getWord());
             }
 
+            MyIterTreeSet<Record> myTreeSet = new MyIterTreeSet<>();
+            myTreeSet.addAll(records);
+            System.out.println("\r\nСписок слов в обратном порядке при помощи собственного итератора:");
+            Iterator<Record> myIter = myTreeSet.iterator();
+            while (myIter.hasNext())
+            {
+                System.out.println(myIter.next().getWord());
+            }
+
             Scanner scanner = new Scanner(System.in);
             while (true){
                 System.out.print("\r\nВведите номер строки (для звершения введите -1): ");
                 if (scanner.hasNextInt()) {
                     int num = scanner.nextInt();
                     if(num < 0) break;
-                    printRec(records, num);
+                    printRecNum(records, num);
                 }
                 else {
+                    System.out.println("Ошибка ввода!");
                     scanner.next();
                 }
             }
-
-            ArrayList<String> list = new ArrayList<>();
-
         }
         catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public static void printRec(Set<Record> set, Integer num) {
+    public static void printRecNum(Set<Record> set, Integer num) {
         if (num < 0 || num > set.size() - 1) return;
 
         Record[] records = new Record[set.size()];
