@@ -1,10 +1,8 @@
-import org.omg.CORBA.BAD_PARAM;
-
 import java.text.Collator;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Record implements Comparable {
+public class Record implements Comparable<Record> {
     private final Collator collator;
     private final String word;
     private int count = 1;
@@ -27,14 +25,10 @@ public class Record implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o instanceof Record) {
-            Record compRec = (Record) o;
-            if (this.getWord().length() < compRec.getWord().length()) return -1;
-            else if (this.getWord().length() > compRec.getWord().length()) return 1;
-            else return this.collator.compare(this.getWord(), compRec.getWord());
-        }
-        return 0; // А еще лучше - исключение
+    public int compareTo(Record o) {
+        if (this.getWord().length() < o.getWord().length()) return -1;
+        else if (this.getWord().length() > o.getWord().length()) return 1;
+        else return this.collator.compare(this.getWord(), o.getWord());
     }
 
     @Override

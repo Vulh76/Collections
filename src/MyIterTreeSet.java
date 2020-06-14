@@ -4,7 +4,7 @@ import java.util.TreeSet;
 public class MyIterTreeSet<E> extends TreeSet<E> {
     @Override
     public Iterator<E> iterator() {
-        Iterator<E> it = new Iterator<E>() {
+        return new Iterator<E>() {
             Iterator<E> revIt = MyIterTreeSet.super.descendingIterator();
 
             @Override
@@ -17,8 +17,6 @@ public class MyIterTreeSet<E> extends TreeSet<E> {
                 return revIt.next();
             }
         };
-
-        return it;
 
         /*return () -> new Iterator<E>() {
             @Override
